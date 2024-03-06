@@ -47,52 +47,58 @@ function App() {
     let card = Cards.splice(0, 1)[0];
     setPlayerCards([...playerCards, card]);
 
-    if (card.val === 'Ace' && totalPlayerScore <= 10) {
-      setTotalPlayerScore(totalPlayerScore + card.pointBis);
-      return;
-    }
+    setTimeout(() => {
+      if (card.val === 'Ace' && totalPlayerScore <= 10) {
+        setTotalPlayerScore(totalPlayerScore + card.pointBis);
+        return;
+      }
 
-    setTotalPlayerScore(totalPlayerScore + card.point);
+      setTotalPlayerScore(totalPlayerScore + card.point);
+    }, 1500)
   }
 
   // Calculate the total score of the player and the dealer on the first deal
   useEffect(() => {
     if (playerCards.length === 0) return;
 
-    if (dealerCards.length === 1) {
-      if (dealerCards[0].val === 'Ace') {
-        setTotalDealerScore(11);
-      }
+    setTimeout(() => {
+      if (dealerCards.length === 1) {
+        if (dealerCards[0].val === 'Ace') {
+          setTotalDealerScore(11);
+        }
 
-      if (dealerCards[0].val !== 'Ace') {
-        setTotalDealerScore(dealerCards[0].point);
+        if (dealerCards[0].val !== 'Ace') {
+          setTotalDealerScore(dealerCards[0].point);
+        }
       }
-    }
+    }, 1000)
 
-    if (playerCards.length === 2) {
-      if (playerCards[0].val === 'Ace') {
-        setTotalPlayerScore(playerCards[0].pointBis + playerCards[1].point);
-      }
+    setTimeout(() => {
+      if (playerCards.length === 2) {
+        if (playerCards[0].val === 'Ace') {
+          setTotalPlayerScore(playerCards[0].pointBis + playerCards[1].point);
+        }
 
-      if (playerCards[1].val === 'Ace') {
-        setTotalPlayerScore(playerCards[0].point + playerCards[1].pointBis);
-      }
+        if (playerCards[1].val === 'Ace') {
+          setTotalPlayerScore(playerCards[0].point + playerCards[1].pointBis);
+        }
 
-      if (playerCards[0].val === 'Ace' && playerCards[1].val === 'Ace') {
-        setTotalPlayerScore(12);
-      }
+        if (playerCards[0].val === 'Ace' && playerCards[1].val === 'Ace') {
+          setTotalPlayerScore(12);
+        }
 
-      if (playerCards[0].val !== 'Ace' && playerCards[1].val !== 'Ace') {
-        setTotalPlayerScore(playerCards[0].point + playerCards[1].point);
+        if (playerCards[0].val !== 'Ace' && playerCards[1].val !== 'Ace') {
+          setTotalPlayerScore(playerCards[0].point + playerCards[1].point);
+        }
       }
-    }
+    }, 2050)
 
   }, [playerCards, totalPlayerScore, dealerCards])
 
   // Check if the player has a blackjack on the first deal
   useEffect(() => {
     if (playerCards.length === 0) return;
-    if ((playerCards[0].val === 'Ace' || playerCards[1].val === 'Ace') && totalPlayerScore === 21) {
+    if ((playerCards[0].val === 'Ace' || playerCards[1].val === 'Ace') && totalPlayerScore === 21 && playerCards.length === 2) {
       setMessage('Blackjack !');
       setPlayerBank(pbank => pbank + (actualBet * 3));
       setIsPlayingButtonsVisible(false);
@@ -114,52 +120,54 @@ function App() {
   // Draw cards for the dealer while the total score is less than 17
   useEffect(() => {
     if (isDealerTurn) {
-      if (totalDealerScore < 17) {
 
-        const drawDealerCard = () => {
+      setTimeout(() => {
+        if (totalDealerScore < 17) {
 
-          let card = Cards.splice(0, 1)[0];
-          setDealerCards([...dealerCards, card]);
+          const drawDealerCard = () => {
 
-          if (card.val === 'Ace' && totalDealerScore < 11) {
-            setTotalDealerScore(totalDealerScore + card.pointBis);
-            return;
+            let card = Cards.splice(0, 1)[0];
+            setDealerCards([...dealerCards, card]);
+
+            if (card.val === 'Ace' && totalDealerScore < 11) {
+              setTotalDealerScore(totalDealerScore + card.pointBis);
+              return;
+            }
+            setTotalDealerScore(totalDealerScore + card.point);
           }
-          setTotalDealerScore(totalDealerScore + card.point);
-        }
-        setTimeout(() => {
           drawDealerCard();
-        }, 1000);
-      }
-
-      if (totalDealerScore >= 17) {
-        setIsDealerTurn(false);
-
-        if (totalDealerScore > 21) {
-          setMessage('Dealer busted !');
-          setPlayerBank(pbank => pbank + (actualBet * 2));
-          setIsPlayingAgainButtonVisible(true);
         }
 
-        if (totalDealerScore <= 21) {
-          if (totalDealerScore > totalPlayerScore) {
-            setMessage('Dealer wins !');
-            setIsPlayingAgainButtonVisible(true);
-          }
+        if (totalDealerScore >= 17) {
+          setIsDealerTurn(false);
 
-          if (totalDealerScore === totalPlayerScore) {
-            setMessage('It\'s a tie !');
-            setPlayerBank(pbank => pbank + actualBet);
-            setIsPlayingAgainButtonVisible(true);
-          }
-
-          if (totalDealerScore < totalPlayerScore) {
-            setMessage('Player wins !');
+          if (totalDealerScore > 21) {
+            setMessage('Dealer busted !');
             setPlayerBank(pbank => pbank + (actualBet * 2));
             setIsPlayingAgainButtonVisible(true);
           }
+
+          if (totalDealerScore <= 21) {
+            if (totalDealerScore > totalPlayerScore) {
+              setMessage('Dealer wins !');
+              setIsPlayingAgainButtonVisible(true);
+            }
+
+            if (totalDealerScore === totalPlayerScore) {
+              setMessage('It\'s a tie !');
+              setPlayerBank(pbank => pbank + actualBet);
+              setIsPlayingAgainButtonVisible(true);
+            }
+
+            if (totalDealerScore < totalPlayerScore) {
+              setMessage('Player wins !');
+              setPlayerBank(pbank => pbank + (actualBet * 2));
+              setIsPlayingAgainButtonVisible(true);
+            }
+          }
         }
-      }
+      }, 1000)
+
     }
   }, [isDealerTurn, totalDealerScore, dealerCards, actualBet, totalPlayerScore])
 
@@ -187,12 +195,15 @@ function App() {
               return;
             }
             setIsBetVisible(false);
-            setIsPlayingButtonsVisible(true);
-            setIsDesablingPlayingButtons(false);
             setPlayerBank(playerBank - bet);
             setActualBet(bet);
             shuffleCards(Cards);
             firstCardDeal();
+
+            setTimeout(() => {
+              setIsPlayingButtonsVisible(true);
+              setIsDesablingPlayingButtons(false);
+            }, 2050)
           }}>{bet}$</button>
         }
         )}
@@ -214,50 +225,12 @@ function App() {
             display: 'flex',
             flexDirection: 'column',
             gap: '20px',
-            padding: '20px',
-            textAlign: 'center',
+            padding: '20px'
           }}
         >
           <DealerHand dealerCards={dealerCards} />
-          <p>{totalDealerScore}</p>
+          <p style={{ textAlign: 'center' }}>{totalDealerScore}</p>
         </div>
-
-        {/* Message and play again button */}
-        <div style={{
-          position: 'absolute',
-          bottom: '50%',
-          left: 0,
-          right: 0,
-          marginLeft: 'auto',
-          marginRight: 'auto',
-          display: 'flex',
-          flexDirection: 'column',
-          textAlign: 'center',
-        }}>
-          <p>{message}</p>
-          <div>
-            <button
-              style={{
-                opacity: `${isPlayingAgainButtonVisible ? '1' : '0'}`,
-              }}
-              disabled={!isPlayingAgainButtonVisible}
-              onClick={() => {
-                setPlayerCards([]);
-                setDealerCards([]);
-                setTotalPlayerScore(0);
-                setTotalDealerScore(0);
-                setIsBetVisible(true);
-                setIsPlayingAgainButtonVisible(false);
-                setMessage('');
-                setActualBet(0);
-              }}
-            >
-              Play again
-            </button>
-          </div>
-        </div>
-
-
         {/* Player hand */}
         <div style={{
           display: 'flex',
@@ -310,6 +283,43 @@ function App() {
           }}>
             <div>Player Bank: {playerBank} $</div>
             <div>Actual bet: {actualBet} $</div>
+          </div>
+        </div>
+
+
+
+        {/* Message and play again button */}
+        <div style={{
+          position: 'absolute',
+          bottom: '50%',
+          left: 0,
+          right: 0,
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          display: 'flex',
+          flexDirection: 'column',
+          textAlign: 'center',
+        }}>
+          <p>{message}</p>
+          <div>
+            <button
+              style={{
+                opacity: `${isPlayingAgainButtonVisible ? '1' : '0'}`,
+              }}
+              disabled={!isPlayingAgainButtonVisible}
+              onClick={() => {
+                setPlayerCards([]);
+                setDealerCards([]);
+                setTotalPlayerScore(0);
+                setTotalDealerScore(0);
+                setIsBetVisible(true);
+                setIsPlayingAgainButtonVisible(false);
+                setMessage('');
+                setActualBet(0);
+              }}
+            >
+              Play again
+            </button>
           </div>
         </div>
 
