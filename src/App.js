@@ -179,6 +179,7 @@ function App() {
           display: `${isBetVisible ? 'flex' : 'none'}`,
           justifyContent: 'center',
           alignItems: 'center',
+          gap: '10px',
           position: 'absolute',
           top: 0,
           left: 0,
@@ -278,7 +279,7 @@ function App() {
           {/* Player bank and actual bet */}
           <div style={{
             position: 'absolute',
-            bottom: 20,
+            bottom: 250,
             left: 30,
           }}>
             <div>Player Bank: {playerBank} $</div>
